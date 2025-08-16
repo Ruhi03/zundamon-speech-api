@@ -809,6 +809,7 @@ class Text2SemanticDecoder(nn.Module):
         v_cache = None
         ###################  first step ##########################
         if y is not None:
+            y = y.long()
             y_emb = self.ar_audio_embedding(y)
             y_len = y_emb.shape[1]
             prefix_len = y.shape[1]
