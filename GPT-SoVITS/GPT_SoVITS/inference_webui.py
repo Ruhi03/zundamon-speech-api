@@ -20,6 +20,9 @@ logging.getLogger("multipart.multipart").setLevel(logging.ERROR)
 import LangSegment, os, re, sys, json
 import pdb
 import torch
+from torch.serialization import add_safe_globals
+from utils import HParams
+add_safe_globals([HParams])
 
 try:
     import gradio.analytics as analytics
