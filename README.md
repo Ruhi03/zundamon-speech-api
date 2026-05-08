@@ -1,181 +1,96 @@
-# Zundamon Speech WebUI
+# 🟢 Zundamon Speech API
 
-This repository provides an official trial version of the **Zundamon Speech WebUI**. It allows users to try **Zundamon's TTS audio generation** and explore its capabilities.
+이 프로젝트는 [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) 기술을 기반으로 하며, 즌다몬의 목소리에 최적화되도록 파인튜닝 되었습니다.
 
-Official website: https://zunko.jp/
+## 🔌 API 명세서 (API Endpoints)
 
-## Reference Movie
+기본적으로 디스코드 봇과 소통하도록 만들어졌습니다.
 
-For users who may face difficulties during installation, the following tutorial videos provide step-by-step guidance:
+### 음성 합성 요청 (POST /synthesize)
 
-- [Installation Guide Video 1](https://www.youtube.com/watch?v=KZaFLIta2WU)
-- [Installation Guide Video 2](https://www.youtube.com/watch?v=cWBAWCUg9s4)
-- [Installation Guide Video 3](https://www.youtube.com/watch?v=nMXaVyoxGz0)
+텍스트를 전송하면 즌다몬의 목소리로 합성된 오디오 스트림을 반환합니다.
 
-By following these videos, users can avoid common issues related to folder structure and setup.
+- **요청 (Request)**: `application/json`
 
-## Overview
-
-This project is based on [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) and has been adapted and fine-tuned for Zundamon's voice synthesis. The WebUI for inference is built using Streamlit, providing a user-friendly interface for generating Zundamon's speech audio files.
-
-## Features
-
-1. **User-Friendly Web Interface**: Easily upload reference audio and text, input your target text, and generate Zundamon's voice in your desired language.
-2. **Custom Models**: Fine-tuned models specifically for Zundamon are included to provide high-quality voice synthesis.
-3. **Reference Files**: Sample reference audio and text for Zundamon are provided in the `reference` folder.
-4. **Download Support**: Generated audio files can be downloaded directly from the interface.
-5. **Multilingual Support**: Choose from multiple languages for both reference and target text.
-
-## Prerequisites
-
-Before starting, ensure you have the required dependencies installed:
-
-```bash
-pip install -r requirements.txt
-```
-
-After installing the dependencies, please install PyTorch manually from the official website.
-
-The following PyTorch version has been tested and verified to work successfully:
-
-- **PyTorch**: `2.1.2`
-- **CUDA**: `12.1`
-- **Python**: `3.9`
-
-You can install it using the [following command](https://pytorch.org/get-started/previous-versions/#linux-and-windows-19):
-
-```bash
-pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu121
-```
-
-For other installation options, please visit the official [PyTorch website](https://pytorch.org/get-started/previous-versions/).
-
-## Setup Instructions
-
-### **Step 1: Clone the Repository (with Submodules)**
-
-To ensure all required submodules are initialized properly, use the following command:
-
-```bash
-git clone --recursive https://github.com/zunzun999/zundamon-speech-webui.git
-cd zundamon-speech-webui
-```
-
-If you have already cloned the repository without the `--recursive` flag, run:
-
-```bash
-git submodule update --init --recursive
-```
-
-### Step 2: Download Pretrained Models
-
-1. **Download GPT-SoVITS Pretrained Models**: Place the pretrained models in the `GPT-SoVITS/GPT_SoVITS/pretrained_models` folder:
-    - Use the following commands to download and set up the models:
-        
-        ```bash
-        git lfs install
-        ```
-
-        ```bash
-        git clone https://huggingface.co/lj1995/GPT-SoVITS
-        ```
-2. **Download G2PW Models**: Download and unzip the G2PW models from [G2PWModel_1.1.zip](https://paddlespeech.bj.bcebos.com/Parakeet/released_models/g2p/G2PWModel_1.1.zip), rename the folder to `G2PWModel`, and place it in `GPT-SoVITS/GPT_SoVITS/text`.
-3. **Download Zundamon Fine-Tuned Model**:
-Download the [fine-tuned models](https://huggingface.co/zunzunpj/zundamon_GPT-SoVITS/tree/main) for Zundamon and place them in the `zundamon-speech-webui/GPT-SoVITS` folder:
-    - Fine-tuned models include `GPT_weights_v2` and `SoVITS_weights_v2`.
-    - Use the following commands to download and set up the models:
-        
-        ```bash
-        git clone https://huggingface.co/zunzunpj/zundamon_GPT-SoVITS
-        ```
-        
-
-### Additional Requirements for Windows Installation
-
-1. **Download and Install FFmpeg**
-    - Download and place [ffmpeg.exe](https://huggingface.co/lj1995/VoiceConversionWebUI/blob/main/ffmpeg.exe) and [ffprobe.exe](https://huggingface.co/lj1995/VoiceConversionWebUI/blob/main/ffprobe.exe).
-    - Place them in the root directory of `zundamon-speech-webui/GPT-SoVITS`.
-2. **Install Visual Studio Build Tools**
-    - Visit the [Visual Studio Download Page](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
-    - Download and install "Visual Studio Build Tools".
-    - During installation, select "Desktop development with C++".
-3. **Install CMake**
-    - Visit the [CMake Official Site](https://cmake.org/download/).
-    - Download and install the Windows version of CMake.
-    - During installation, choose "Add CMake to the system PATH".
-
-### Troubleshooting
-
-If you encounter an error like:
-
-```
-An error occurred during inference:
-Resource averaged_perceptron_tagger_eng not found.
-```
-
-Try running the following commands in your project environment:
-
-```python
-import nltk
-nltk.download('averaged_perceptron_tagger')
-nltk.download('averaged_perceptron_tagger_eng')
-```
-
-This will ensure the necessary NLTK resources are downloaded.
-
-## How to Use the WebUI
-
-1. Navigate to the project directory:
-    
-    ```bash
-    cd zundamon-speech-webui
+    ```json
+    {
+      "target_text": "음성으로 변환할 텍스트를 입력하세요.",
+      "target_language": "Korean",  // 기본값: "Korean"
+        (영어, 일본어 등 지원)
+      "top_p": 0.7,                 // 기본값: 0.7
+      "temperature": 0.8            // 기본값: 0.8
+    }
     ```
-    
-2. Run the WebUI using Streamlit:
-    
-    ```bash
-    python zundamon_speech_run.py
-    ```
-    
-3. Open the WebUI in your browser (URL will be displayed in the terminal).
-![Zundamon WebUI Example](imgs/webui.PNG)
 
+- **응답 (Response)**: `audio/wav`
 
-## How to Generate Zundamon's Voice Audio
+        생성된 음성 데이터가 StreamingResponse를 통해 즉시 스트리밍 됩니다.
 
-1. **Upload Reference Files**
-    - **Step 1: Reference Audio File** Upload a sample audio file for Zundamon's voice (`.wav`).
-    - **Step 2: Reference Text** Provide or upload a text file that corresponds to the reference audio file.
-2. **Input Target Details**
-    - **Step 3: Target Text** Enter the text you want to synthesize in Zundamon's voice.
-    - **Step 4: Language Selection** Select the language for both reference and target text.
-3. **Generate Audio**
-    
-    Click the **Generate Speech** button. After processing, the synthesized audio will be displayed with options to preview and download.
-    
+## 🛠️ 설치 및 실행 방법
+### 1단계: 사전 준비
 
-## Sample Reference Files
+    Docker & Docker Compose (Windows의 경우 Docker Desktop)
 
-A sample reference audio file and corresponding text for Zundamon are included in the `reference` folder. Feel free to use them to test the WebUI.
+    NVIDIA GPU (빠른 추론을 위해 8GB 이상의 VRAM 권장)
 
-For additional Zundamon voice resources, visit the official download page:
+    NVIDIA Container Toolkit (도커에서 GPU를 사용하기 위해 필수)
 
-https://zunko.jp/multimodal_dev/login.php
+### 2-1단계 Download GPT-SoVITS Pretrained Models
+```
+cd /workspace
 
-## License Information
+git clone https://huggingface.co/lj1995/GPT-SoVITS temp_gptso
 
-This software includes the following open-source software:
+cp -r temp_gptso/* /workspace/zundamon-speech-api/zundamon_sovits/GPT_SoVITS/pretrained_models/
 
-- [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) (MIT License)
-- [GPT-SoVITS Pretrained Models](https://huggingface.co/lj1995/GPT-SoVITS) (MIT License)
-- [G2PW Model](https://github.com/GitYCC/g2pW) (Apache 2.0 License)
-- [UVR5 (Voice Cleaning)](https://huggingface.co/lj1995/VoiceConversionWebUI/tree/main/uvr5_weights) (MIT License)
-- [Faster Whisper Large V3](https://huggingface.co/Systran/faster-whisper-large-v3) (MIT License)
+rm -rf temp_gptso
+```
 
-These are provided under their respective license terms.
+### 2-2단계 Download G2PW Models
+```
+cd /workspace
 
-The license for the Zundamon Voice model is as follows:
+wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/G2PWModel_1.1.zip -O G2PWModel_1.1.zip
+
+unzip G2PWModel_1.1.zip
+
+mv G2PWModel_1.1 G2PWModel
+
+mv G2PWModel /workspace/zundamon-speech-api/zundamon_sovits/GPT_SoVITS/text/
+
+rm G2PWModel_1.1.zip
+```
+
+### 2-3단계 Download Zundamon Fine-Tuned Model
+```
+cd /workspace
+
+git clone https://huggingface.co/zunzunpj/zundamon_GPT-SoVITS temp_zunda
+
+cp -r temp_zunda/* /workspace/zundamon-speech-api/zundamon_sovits/
+
+rm -rf temp_zunda
+```
+
+### 3단계: 서버 실행 (Docker Compose)
+
+모든 준비가 완료되었다면, 다음 명령어를 통해 API 서버가 실행합니다
+
+```Bash
+docker-compose up -d
+```
+## 📜 라이선스 정보
+
+이 소프트웨어는 다음과 같은 오픈소스 소프트웨어를 포함하고 있습니다:
+
+- GPT-SoVITS (MIT License)
+- GPT-SoVITS Pretrained Models (MIT License)
+- G2PW Model (Apache 2.0 License)
+- UVR5 (Voice Cleaning) (MIT License)
+- Faster Whisper Large V3 (MIT License)
+- FastAPI (MIT License)
+
+해당 소프트웨어들은 각각의 라이선스 조항에 따라 제공됩니다.
+
+즌다몬(Zundamon) 음성 모델에 대한 라이선스는 다음 규약을 따릅니다:
 https://zunko.jp/con_ongen_kiyaku.html
-
-
-

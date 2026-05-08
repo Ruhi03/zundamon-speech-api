@@ -20,7 +20,6 @@ soxr
 transformers>=4.40,<4.46
 sentencepiece
 modelscope==1.10.0
-onnxruntime
 onnxruntime-gpu
 tqdm
 psutil
