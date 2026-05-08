@@ -1,4 +1,6 @@
 import os
+import torch
+from feature_extractor import cnhubert
 
 SOVITS_MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,3 +19,24 @@ FALLBACK_LANG2CODE = {
     "English": "en",
     "Chinese": "all_zh",
 }
+
+is_half = eval(os.environ.get("is_half", "True")) and torch.cuda.is_available()
+dtype=torch.float16 if is_half == True else torch.float32
+
+if torch.cuda.is_available():
+    device = "cuda"
+else:
+    device = "cpu"
+
+cnhubert_base_path = os.environ.get(
+    "cnhubert_base_path", "GPT_SoVITS/pretrained_models/chinese-hubert-base"
+)
+
+cnhubert.cnhubert_base_path = cnhubert_base_path
+
+ssl_model = cnhubert.get_model()
+
+if is_half == True:
+    ssl_model = ssl_model.half().to(device)
+else:
+    ssl_model = ssl_model.to(device)

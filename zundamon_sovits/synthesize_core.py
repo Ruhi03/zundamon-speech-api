@@ -8,13 +8,17 @@ from typing import Any, Dict
 from config import (
     GPT_MODEL_PATH, SOVITS_MODEL_PATH,
     REF_AUDIO_PATH, REF_TEXT, REF_LANGUAGE,
-    FALLBACK_LANG2CODE
+    FALLBACK_LANG2CODE, is_half, device, ssl_model
 )
 
 from GPT_SoVITS.inference_webui import (
-    change_gpt_weights, change_sovits_weights, get_phones_and_bert, get_spepc,
-    ssl_model, vq_model, hps, device, is_half, t2s_model, hz, max_sec, version, dict_language,
+    change_gpt_weights, change_sovits_weights,
+    vq_model, hps, version, dict_language,
+    hz, max_sec, t2s_model,
 )
+
+from text_processor import get_phones_and_bert
+from audio_utils import get_spepc
 
 class ZundamonTTS:
     def __init__(self):
