@@ -3,10 +3,9 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 import traceback
 
-from synthesize_core import ZundamonTTS
+from core.synthesize_core import zundamon_tts
 
-router = APIRouter()
-zundamon_tts = ZundamonTTS()
+router = APIRouter(tags=["TTS Engine"])
 
 # 1) 디스코드 봇이 보낼 JSON 데이터 규격 만들기
 class SynthesizeRequest(BaseModel):
